@@ -3,6 +3,16 @@
     <h1>Создать ссылку</h1>
     <form @submit.prevent @submit="send">
       <div class="mb-3">
+        <label for="passwordInput" class="form-label">Код авторизации</label>
+        <input
+          type="password"
+          class="form-control"
+          id="passwordInput"
+          v-model="password"
+          required
+        />
+      </div>
+      <div class="mb-3">
         <label for="urlFromInput" class="form-label">Имя ссылки</label>
         <input
           type="text"
@@ -38,32 +48,20 @@
           </p>
         </div>
       </div>
-      <div class="mb-3">
-        <label for="passwordInput" class="form-label">Код авторизации</label>
-        <input
-          type="password"
-          class="form-control"
-          id="passwordInput"
-          v-model="password"
-          required
-        />
-      </div>
       <button type="submit" class="btn btn-primary">Сократить</button>
     </form>
     <toast :state="state" :url_from_prev="url_from_prev" @clear="clear"></toast>
   </div>
-
 </template>
 
 <script>
 import axios from "axios";
-import Toast from "@/components/Toast.vue"
-
-const API_ROOT = "https://to.dyakov.space";
+import Toast from "@/components/Toast.vue";
+import { API_ROOT } from "@/constants.js"
 
 export default {
   components: {
-    Toast
+    Toast,
   },
   data() {
     return {
@@ -81,7 +79,7 @@ export default {
   },
   watch: {
     password(new_password) {
-      localStorage.password = new_password;
+      localStorage.setItem('password', new_password);
     },
   },
   methods: {
@@ -95,14 +93,22 @@ export default {
           }
         );
         console.log(response);
-        this.state = "ok";
+        this.appendHistory(this.url_from);
+        this.state = "create-ok";
         this.url_from_prev = `${API_ROOT}/${this.url_from}`;
         this.url_from = "";
         this.url_to = "";
       } catch (error) {
-        this.state = "fail";
+        this.state = "create-fail";
       }
       console.log(this.state);
+    },
+    appendHistory(alias) {
+      var hist;
+      hist = localStorage.getItem('history') || "[]";
+      hist = JSON.parse(hist);
+      hist.push(alias)
+      localStorage.setItem('history', JSON.stringify(hist))
     },
     clear() {
       console.log("clear");

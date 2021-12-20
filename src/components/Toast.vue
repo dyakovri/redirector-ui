@@ -8,7 +8,7 @@
     v-if="state !== undefined"
   >
     <div class="toast-header">
-      <strong class="me-auto">Создание короткой ссылки</strong>
+      <strong class="me-auto">Статус</strong>
       <button
         type="button"
         class="btn-close"
@@ -16,18 +16,24 @@
         @click="$emit('clear')"
       ></button>
     </div>
-    <div class="toast-body" v-if="url_from_prev !== undefined">
+    <div class="toast-body" v-if="state == 'create-ok'">
       Ссылка создана!<br />
       <a
-        href="http://{{url_from_prev}}"
+        :href="url_from_prev"
         target="_blank"
         rel="noopener noreferrer"
       >
         {{ url_from_prev }}
       </a>
     </div>
-    <div class="toast-body" v-else>
+    <div class="toast-body" v-else-if="state == 'create-fail'">
       Не удалось создать ссылку. Короткий адрес уже существует?
+    </div>
+    <div class="toast-body" v-else-if="state == 'remove-ok'">
+      Ссылка <code>{{ url_from_prev }}</code> удалена
+    </div>
+    <div class="toast-body" v-else-if="state == 'remove-fail'">
+      Не удалось удалить ссылку <code>{{ url_from_prev }}</code>. Короткий адрес уже существует?
     </div>
   </div>
 </template>
