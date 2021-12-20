@@ -1,5 +1,7 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="home">
+    <h1>Да, это еще один сокращатель ссылок</h1>
+    <p>Это сокращатель ссылок. Он оч простой.</p>
+    <p>Чтоб воспользоваться – попроси код у Ромы.</p>
   </div>
 </template>
