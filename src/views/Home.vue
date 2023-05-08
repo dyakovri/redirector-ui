@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1>Создать ссылку</h1>
-    <form @submit.prevent @submit="send">
+    <form @submit.prevent>
       <div class="mb-3" v-if=!password_from_query>
         <label for="passwordInput" class="form-label">Код авторизации</label>
         <input
@@ -39,7 +39,8 @@
           />
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Сократить</button>
+      <button class="btn btn-success" @click="send_copy">Сократить и скопировать</button>
+      <button class="btn btn-primary mx-2" @click="send">Сократить</button>
     </form>
     <toast :state="state" :url_from_prev="url_from_prev" @clear="clear"></toast>
   </div>
@@ -62,6 +63,19 @@ function makeName(length) {
     return result;
 }
 
+const copyToClipboard = (content) => {
+  /**
+   * Copies the text passed as param to the system clipboard
+   * Check if using HTTPS and navigator.clipboard is available
+   * Then uses standard clipboard API, otherwise uses fallback
+  */
+  const unsecuredCopyToClipboard = (text) => { const textArea = document.createElement("textarea"); textArea.value=text; document.body.appendChild(textArea); textArea.focus();textArea.select(); try{document.execCommand('copy')}catch(err){console.error('Unable to copy to clipboard',err)}document.body.removeChild(textArea)};
+  if (window.isSecureContext && navigator.clipboard) {
+    navigator.clipboard.writeText(content);
+  } else {
+    unsecuredCopyToClipboard(content);
+  }
+};
 
 export default {
   components: {
@@ -114,6 +128,11 @@ export default {
         this.state = "create-fail";
       }
       console.log(this.state);
+      return this.url_from_prev;
+    },
+    async send_copy() {
+      let url = await this.send();
+      copyToClipboard(url);
     },
     appendHistory(alias) {
       var hist;
