@@ -1,11 +1,11 @@
-FROM node:16 AS build
+FROM node:18 AS build
 WORKDIR /app
-ADD ./package.json ./package-lock.json /app/
-RUN npm install
+ADD ./package.json ./pnpm-lock.yaml /app/
+RUN npm i -g pnpm && pnpm install
 ADD . /app
-RUN npm run build
+RUN pnpm run build
 
-FROM nginx:1.21
+FROM nginx:1.23
 LABEL org.opencontainers.image.source = "https://github.com/dyakovri/redirector-ui"
 ADD ./default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
