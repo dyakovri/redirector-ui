@@ -1,8 +1,10 @@
 FROM node:18 AS build
+ARG API_ROOT
 WORKDIR /app
 ADD ./package.json ./pnpm-lock.yaml /app/
 RUN npm i -g pnpm && pnpm install
 ADD . /app
+RUN echo VUE_APP_API_ROOT=${API_ROOT} > /app/.env
 RUN pnpm run build
 
 FROM nginx:1.23

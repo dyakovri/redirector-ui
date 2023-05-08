@@ -29,7 +29,6 @@
 <script>
 import axios from "axios";
 import Toast from "@/components/Toast.vue";
-import { API_ROOT } from "@/constants.js";
 
 export default {
   components: {
@@ -50,7 +49,7 @@ export default {
     hist = localStorage.getItem("history") || "[]";
     hist = JSON.parse(hist);
     hist.forEach((alias) =>
-      this.hist.push({ alias: alias, url_from: `${API_ROOT}/${alias}` })
+      this.hist.push({ alias: alias, url_from: `${process.env.VUE_APP_API_ROOT}/${alias}` })
     );
     console.log(this.hist);
   },
@@ -64,7 +63,7 @@ export default {
       this.url_from_prev = this.hist[index].url_from;
       try {
         var response = await axios.delete(
-          `${API_ROOT}/${this.password}/url/${this.hist[index].alias}`,
+          `${process.env.VUE_APP_API_ROOT}/${this.password}/url/${this.hist[index].alias}`,
           {
             url_to: this.url_to,
           }

@@ -26,7 +26,7 @@
         <div id="urlFromHelp" class="form-text">
           <p>
             Имя ссылки <code>short</code> будет иметь вид
-            <code>https://to.dyakov.space/short</code>
+            <code>{{ root }}/short</code>
           </p>
         </div>
       </div>
@@ -57,7 +57,6 @@
 <script>
 import axios from "axios";
 import Toast from "@/components/Toast.vue";
-import { API_ROOT } from "@/constants.js"
 
 export default {
   components: {
@@ -70,6 +69,7 @@ export default {
       password: "",
       state: undefined,
       url_from_prev: undefined,
+      root: process.env.VUE_APP_API_ROOT,
     };
   },
   mounted() {
@@ -84,10 +84,10 @@ export default {
   },
   methods: {
     async send() {
-      console.log(`Trying to create ${API_ROOT}/${this.url_from}`);
+      console.log(`Trying to create ${process.env.VUE_APP_API_ROOT}/${this.url_from}`);
       try {
         var response = await axios.post(
-          `${API_ROOT}/${this.password}/url/${this.url_from}`,
+          `${process.env.VUE_APP_API_ROOT}/${this.password}/url/${this.url_from}`,
           {
             url_to: this.url_to,
           }
@@ -95,7 +95,7 @@ export default {
         console.log(response);
         this.appendHistory(this.url_from);
         this.state = "create-ok";
-        this.url_from_prev = `${API_ROOT}/${this.url_from}`;
+        this.url_from_prev = `${process.env.VUE_APP_API_ROOT}/${this.url_from}`;
         this.url_from = "";
         this.url_to = "";
       } catch (error) {
